@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Reminders - MedCare</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .reminders-section {
+            padding: var(--spacing-3xl) 0;
+            background: var(--primary-light);
+        }
+
+        .reminder-form {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .reminder-list {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+        }
+
+        .reminder-item {
+            background: var(--primary-light);
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius);
+            margin-bottom: var(--spacing-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .delete-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo"><svg class="logo-icon" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                    </svg>
+                    <h1>MedCare</h1>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main>
+        <section class="reminders-section">
+            <div class="container" style="max-width: 800px;">
+                <h2
+                    style="font-family: 'Kalam', cursive; font-size: 2.5rem; color: var(--primary-color); text-align: center; margin-bottom: var(--spacing-2xl);">
+                    ⏰ Health Reminders</h2>
+
+                <div class="reminder-form">
+                    <h3 style="margin-bottom: var(--spacing-md);">Add New Reminder</h3>
+                    <div class="form-group"><label class="form-label">Reminder Type</label>
+                        <select id="reminder-type" class="form-input">
+                            <option value="medicine">Medicine</option>
+                            <option value="appointment">Appointment</option>
+                            <option value="checkup">Health Checkup</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label class="form-label">Title</label><input type="text"
+                            id="reminder-title" class="form-input" placeholder="e.g., Take Aspirin"></div>
+                    <div class="form-group"><label class="form-label">Date & Time</label><input type="datetime-local"
+                            id="reminder-time" class="form-input"></div>
+                    <button class="btn btn-primary" id="add-reminder-btn">Add Reminder</button>
+                </div>
+
+                <div class="reminder-list">
+                    <h3 style="margin-bottom: var(--spacing-md);">Your Reminders</h3>
+                    <div id="reminders-container"></div>
+                </div>
+
+                <div style="text-align: center; margin-top: var(--spacing-3xl);"><a href="features-hub.html"
+                        class="btn btn-secondary">← Back to Features</a></div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        let reminders = JSON.parse(localStorage.getItem('healthReminders') || '[]');
+
+        function displayReminders() {
+            const container = document.getElementById('reminders-container');
+            if (reminders.length === 0) {
+                container.innerHTML = '<p style="text-align: center; opacity: 0.6;">No reminders yet. Add one above!</p>';
+                return;
+            }
+            container.innerHTML = reminders.map((r, i) => `
+                <div class="reminder-item">
+                    <div><strong>${r.title}</strong><br><small>${r.type} - ${new Date(r.time).toLocaleString()}</small></div>
+                    <button class="delete-btn" onclick="deleteReminder(${i})">Delete</button>
+                </div>
+            `).join('');
+        }
+
+        function deleteReminder(index) {
+            reminders.splice(index, 1);
+            localStorage.setItem('healthReminders', JSON.stringify(reminders));
+            displayReminders();
+        }
+
+        document.getElementById('add-reminder-btn').addEventListener('click', () => {
+            const type = document.getElementById('reminder-type').value;
+            const title = document.getElementById('reminder-title').value;
+            const time = document.getElementById('reminder-time').value;
+
+            if (!title || !time) { alert('Please fill all fields'); return; }
+
+            reminders.push({ type, title, time });
+            localStorage.setItem('healthReminders', JSON.stringify(reminders));
+
+            if (Notification.permission === 'granted') {
+                new Notification('Reminder Added!', { body: title });
+            } else if (Notification.permission !== 'denied') {
+                Notification.requestPermission();
+            }
+
+            document.getElementById('reminder-title').value = '';
+            document.getElementById('reminder-time').value = '';
+            displayReminders();
+        });
+
+        displayReminders();
+    </script>
+</body>
+
+</html>

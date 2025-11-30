@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Features - MedCare</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .features-hub {
+            padding: var(--spacing-3xl) 0;
+            min-height: 100vh;
+        }
+
+        .hub-header {
+            text-align: center;
+            margin-bottom: var(--spacing-3xl);
+        }
+
+        .hub-title {
+            font-family: 'Kalam', cursive;
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .hub-subtitle {
+            color: var(--neutral-gray);
+            font-size: 1.2rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-3xl);
+        }
+
+        .feature-card-large {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: var(--transition-fast);
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            border: 2px solid transparent;
+        }
+
+        .feature-card-large:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 127, 86, 0.15);
+            border-color: var(--primary-color);
+        }
+
+        .feature-icon-large {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .feature-title-large {
+            font-family: 'Kalam', cursive;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .feature-description-large {
+            color: var(--neutral-gray);
+            line-height: 1.6;
+        }
+
+        .feature-badge {
+            display: inline-block;
+            background: var(--primary-color);
+            color: var(--white);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: var(--spacing-sm);
+        }
+
+        .badge-new {
+            background: #ff6b6b;
+        }
+
+        .badge-popular {
+            background: #4ecdc4;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header" role="banner">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                    </svg>
+                    <h1>MedCare</h1>
+                </div>
+                <nav class="main-nav">
+                    <ul class="nav-menu">
+                        <li><a href="index.html" class="nav-link">Home</a></li>
+                        <li><a href="features-hub.html" class="nav-link">Features</a></li>
+                        <li><a href="prescription-scanner.html" class="nav-link">Prescription Scanner</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <section class="features-hub">
+            <div class="container">
+                <div class="hub-header">
+                    <h2 class="hub-title">🚀 Advanced Healthcare Features</h2>
+                    <p class="hub-subtitle">Explore our unique tools designed to enhance your healthcare experience</p>
+                </div>
+
+                <div class="features-grid">
+                    <!-- Emergency SOS -->
+                    <a href="emergency-sos.html" class="feature-card-large">
+                        <div class="feature-icon-large">🚨</div>
+                        <h3 class="feature-title-large">Emergency SOS</h3>
+                        <p class="feature-description-large">Quick access to emergency services with location sharing
+                            and instant contact alerts</p>
+                        <span class="feature-badge">Critical</span>
+                    </a>
+
+                    <!-- AI Symptom Checker -->
+                    <a href="symptom-checker.html" class="feature-card-large">
+                        <div class="feature-icon-large">🤖</div>
+                        <h3 class="feature-title-large">AI Symptom Checker</h3>
+                        <p class="feature-description-large">Get preliminary diagnosis and doctor recommendations based
+                            on your symptoms</p>
+                        <span class="feature-badge badge-popular">Popular</span>
+                    </a>
+
+                    <!-- Health Reminders -->
+                    <a href="health-reminders.html" class="feature-card-large">
+                        <div class="feature-icon-large">⏰</div>
+                        <h3 class="feature-title-large">Health Reminders</h3>
+                        <p class="feature-description-large">Never miss a medicine or appointment with smart
+                            notifications</p>
+                        <span class="feature-badge badge-new">New</span>
+                    </a>
+
+                    <!-- Medicine Interaction Checker -->
+                    <a href="medicine-interaction.html" class="feature-card-large">
+                        <div class="feature-icon-large">⚠️</div>
+                        <h3 class="feature-title-large">Drug Interaction Checker</h3>
+                        <p class="feature-description-large">Check if your medicines are safe to take together</p>
+                        <span class="feature-badge">Safety</span>
+                    </a>
+
+                    <!-- Lab Test Comparison -->
+                    <a href="lab-test-comparison.html" class="feature-card-large">
+                        <div class="feature-icon-large">🔬</div>
+                        <h3 class="feature-title-large">Lab Test Price Comparison</h3>
+                        <p class="feature-description-large">Compare test prices across labs and save money</p>
+                        <span class="feature-badge">Save Money</span>
+                    </a>
+
+                    <!-- Medicine Alternatives -->
+                    <a href="medicine-alternatives.html" class="feature-card-large">
+                        <div class="feature-icon-large">💊</div>
+                        <h3 class="feature-title-large">Generic Medicine Finder</h3>
+                        <p class="feature-description-large">Find affordable generic alternatives to branded medicines
+                        </p>
+                        <span class="feature-badge">Save Money</span>
+                    </a>
+
+                    <!-- Second Opinion -->
+                    <a href="second-opinion.html" class="feature-card-large">
+                        <div class="feature-icon-large">👨‍⚕️</div>
+                        <h3 class="feature-title-large">Second Opinion</h3>
+                        <p class="feature-description-large">Request expert second opinions on your diagnosis</p>
+                        <span class="feature-badge badge-new">New</span>
+                    </a>
+
+                    <!-- Prescription Scanner -->
+                    <a href="prescription-scanner.html" class="feature-card-large">
+                        <div class="feature-icon-large">📋</div>
+                        <h3 class="feature-title-large">Prescription Scanner</h3>
+                        <p class="feature-description-large">Scan prescriptions and buy medicines instantly with OCR
+                            technology</p>
+                        <span class="feature-badge badge-popular">Popular</span>
+                    </a>
+                </div>
+
+                <div style="text-align: center; margin-top: var(--spacing-3xl);">
+                    <a href="index.html" class="btn btn-primary btn-lg">
+                        ← Back to Home
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>MedCare</h4>
+                    <p>Making healthcare accessible to everyone</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 MedCare Healthcare. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

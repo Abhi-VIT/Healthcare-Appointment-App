@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Second Opinion - MedCare</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .opinion-section {
+            padding: var(--spacing-3xl) 0;
+            background: linear-gradient(135deg, var(--primary-light) 0%, #fff 100%);
+        }
+
+        .upload-box {
+            background: var(--white);
+            border: 2px dashed var(--primary-color);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-2xl);
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .upload-box:hover {
+            background: var(--primary-light);
+        }
+
+        .file-list {
+            margin-top: var(--spacing-md);
+        }
+
+        .file-item {
+            background: var(--primary-light);
+            padding: var(--spacing-sm);
+            border-radius: var(--border-radius);
+            margin-bottom: var(--spacing-xs);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .success-msg {
+            background: var(--primary-color);
+            color: white;
+            padding: var(--spacing-xl);
+            border-radius: var(--border-radius-lg);
+            text-align: center;
+            display: none;
+        }
+
+        .success-msg.active {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo"><svg class="logo-icon" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                    </svg>
+                    <h1>MedCare</h1>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="opinion-section">
+            <div class="container" style="max-width: 800px;">
+                <h2
+                    style="font-family: 'Kalam', cursive; font-size: 2.5rem; color: var(--primary-color); text-align: center; margin-bottom: var(--spacing-md);">
+                    👨‍⚕️ Request Second Opinion</h2>
+                <p style="text-align: center; margin-bottom: var(--spacing-3xl);">Get expert second opinions on your
+                    diagnosis</p>
+
+                <form style="background: white; border-radius: var(--border-radius-lg); padding: var(--spacing-xl);">
+                    <div class="upload-box" id="upload-area">
+                        <svg style="width: 60px; height: 60px; margin-bottom: var(--spacing-md); fill: var(--primary-color);"
+                            viewBox="0 0 24 24">
+                            <path
+                                d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z" />
+                        </svg>
+                        <p><strong>Click to upload medical reports</strong></p>
+                        <p style="opacity: 0.7; font-size: 0.9rem;">PDF, JPG, PNG (Max 10MB)</p>
+                        <input type="file" id="file-input" multiple accept=".pdf,.jpg,.jpeg,.png"
+                            style="display: none;">
+                        <div class="file-list" id="file-list"></div>
+                    </div>
+
+                    <div class="form-group"><label class="form-label">Current Diagnosis</label><textarea
+                            class="form-input" rows="3" id="diagnosis"
+                            placeholder="Describe your current diagnosis..."></textarea></div>
+
+                    <div class="form-group"><label class="form-label">Symptoms</label><textarea class="form-input"
+                            rows="3" id="symptoms" placeholder="List your symptoms..."></textarea></div>
+
+                    <div class="form-group"><label class="form-label">Specialist Required</label>
+                        <select class="form-input" id="specialist">
+                            <option>General Physician</option>
+                            <option>Cardiologist</option>
+                            <option>Neurologist</option>
+                            <option>Oncologist</option>
+                            <option>Orthopedic</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+
+                    <button type="button" class="btn btn-primary btn-lg" id="submit-btn" style="width: 100%;">Submit
+                        Request</button>
+                </form>
+
+                <div class="success-msg" id="success-msg">
+                    <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">✓ Request Submitted!</h3>
+                    <p>Your second opinion request has been sent. A specialist will review your case within 24-48 hours.
+                    </p>
+                    <p style="margin-top: 1rem; opacity: 0.9;">You will receive an email notification when the opinion
+                        is ready.</p>
+                </div>
+
+                <div style="text-align: center; margin-top: var(--spacing-3xl);"><a href="features-hub.html"
+                        class="btn btn-secondary">← Back to Features</a></div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const files = [];
+
+        document.getElementById('upload-area').addEventListener('click', () => document.getElementById('file-input').click());
+
+        document.getElementById('file-input').addEventListener('change', (e) => {
+            const fileList = document.getElementById('file-list');
+            Array.from(e.target.files).forEach(file => {
+                files.push(file);
+                fileList.innerHTML += `<div class="file-item"><span>📄 ${file.name}</span><span>${(file.size / 1024).toFixed(1)} KB</span></div>`;
+            });
+        });
+
+        document.getElementById('submit-btn').addEventListener('click', () => {
+            const diagnosis = document.getElementById('diagnosis').value;
+            const symptoms = document.getElementById('symptoms').value;
+
+            if (!diagnosis || !symptoms) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            document.getElementById('success-msg').classList.add('active');
+            document.querySelector('form').style.display = 'none';
+        });
+    </script>
+</body>
+
+</html>

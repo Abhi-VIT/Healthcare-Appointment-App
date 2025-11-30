@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Symptom Checker - MedCare</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .symptom-section {
+            padding: var(--spacing-3xl) 0;
+            background: linear-gradient(135deg, var(--primary-light) 0%, #fff 100%);
+        }
+
+        .symptom-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .symptom-header {
+            text-align: center;
+            margin-bottom: var(--spacing-3xl);
+        }
+
+        .symptom-title {
+            font-family: 'Kalam', cursive;
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .symptom-card {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .symptom-category {
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .category-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin-bottom: var(--spacing-md);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .symptom-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: var(--spacing-sm);
+        }
+
+        .symptom-checkbox {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-sm);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .symptom-checkbox:hover {
+            background: var(--primary-light);
+        }
+
+        .symptom-checkbox input {
+            margin-right: var(--spacing-sm);
+            cursor: pointer;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #023A34 100%);
+            color: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-2xl);
+            display: none;
+        }
+
+        .result-card.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .urgency-indicator {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin: var(--spacing-md) 0;
+        }
+
+        .urgency-low {
+            background: #4ecdc4;
+        }
+
+        .urgency-medium {
+            background: #ff9f43;
+        }
+
+        .urgency-high {
+            background: #ff6b6b;
+        }
+
+        .recommendation-list {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-md);
+            margin-top: var(--spacing-md);
+        }
+
+        .recommendation-list li {
+            margin-bottom: var(--spacing-sm);
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                    </svg>
+                    <h1>MedCare</h1>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="symptom-section">
+            <div class="container">
+                <div class="symptom-container">
+                    <div class="symptom-header">
+                        <h2 class="symptom-title">🤖 AI Symptom Checker</h2>
+                        <p>Select your symptoms to get preliminary diagnosis and doctor recommendations</p>
+                    </div>
+
+                    <div class="symptom-card">
+                        <div class="symptom-category">
+                            <h3 class="category-title">🤒 General Symptoms</h3>
+                            <div class="symptom-grid">
+                                <label class="symptom-checkbox">
+                                    <input type="checkbox" value="fever" data-category="general">
+                                    <span>Fever</span>
+                                </label>
+                                <label class="symptom-checkbox">
+                                    <input type="checkbox" value="headache" data-category="general">
+                                    <span>Headache</span>
+                                </label>
+                                <label class="symptom-checkbox">
+                                    <input type="checkbox" value="fatigue" data-category="general">
+                                    <span>Fatigue</span>
+                                </label>
+                                <label class="symptom-checkbox">
+                                    <input type="checkbox" value="weakness" data-category="general">
+                                    <span>Weakness</span>
+                                </label>
+                                <label class="symptom-checkbox">
+                                    <input type="checkbox" value="dizziness" data-category="general">
+                                    <span>Dizziness</span>
+                                </label>
+                                <label class="symptom-checkbox">
+                                    <input type="checkbox" value="nausea" data-category="general">
+                                    <span>Nausea</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="symptom-category">
+                            <h3 class="category-title">🫁 Respiratory</h3>
+                            <div class="symptom-grid">
+                                <label class="symptom-checkbox">
+                                    <input type="checkbox" value="cough" data-category="respiratory">
+                                    <span>Cough</span>
+                                </label>
+                                <label class="symptom-checkbox">
+                                    <input type="checkbox" value="shortness_of_breath" data-category="respiratory">
+                                    <span>Shortness of Breath</span>
+                                </label>
+                                <label class="symptom-checkbox">
+                                    <input type="checkbox" value="sore_throat" data-category="respiratory">
+                                    <span>Sore Throat</span>
+                                </label>
+                                <label class="symptom-checkbox">
+                                    <input type="checkbox" value="chest_pain" data-category="respiratory">
+                                    <span>Chest Pain</span>
+                                </label>
+                                <label class="symptom-checkbox">
+                                    <input type="checkbox" value="runny_nose" data-category="respiratory">
+                                    <span>Runny Nose</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="symptom-category">
+                            <h3 class="category-title">🍽️ Digestive</h3>
+                            <div class="symptom-grid">
+                                <label class="symptom-checkbox">
+                                    <input type="checkbox" value="stomach_pain" data-category="digestive">
+                                    <span>Stomach Pain</span>
+                                </label>
+                                <label class="symptom-checkbox">
+                                    <input type="checkbox" value="vomiting" data-category="digestive">
+                                    <span>Vomiting</span>
+                                </label>
+                                <label class="symptom-checkbox">
+                                    <input type="checkbox" value="diarrhea" data-category="digestive">
+                                    <span>Diarrhea</span>
+                                </label>
+                                <label class="symptom-checkbox">
+                                    <input type="checkbox" value="constipation" data-category="digestive">
+                                    <span>Constipation</span>
+                                </label>
+                                <label class="symptom-checkbox">
+                                    <input type="checkbox" value="loss_of_appetite" data-category="digestive">
+                                    <span>Loss of Appetite</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="symptom-category">
+                            <h3 class="category-title">💪 Musculoskeletal</h3>
+                            <div class="symptom-grid">
+                                <label class="symptom-checkbox">
+                                    <input type="checkbox" value="body_ache" data-category="musculoskeletal">
+                                    <span>Body Ache</span>
+                                </label>
+                                <label class="symptom-checkbox">
+                                    <input type="checkbox" value="joint_pain" data-category="musculoskeletal">
+                                    <span>Joint Pain</span>
+                                </label>
+                                <label class="symptom-checkbox">
+                                    <input type="checkbox" value="back_pain" data-category="musculoskeletal">
+                                    <span>Back Pain</span>
+                                </label>
+                                <label class="symptom-checkbox">
+                                    <input type="checkbox" value="muscle_cramps" data-category="musculoskeletal">
+                                    <span>Muscle Cramps</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary btn-lg" id="analyze-btn"
+                            style="width: 100%; margin-top: var(--spacing-xl);">
+                            Analyze Symptoms
+                        </button>
+                    </div>
+
+                    <div class="result-card" id="result">
+                        <h3 style="font-size: 1.8rem; margin-bottom: var(--spacing-md);">📊 Analysis Results</h3>
+                        <div id="result-content"></div>
+                        <div style="margin-top: var(--spacing-xl);">
+                            <a href="index.html#booking-section" class="btn btn-lg"
+                                style="background: var(--white); color: var(--primary-color);">
+                                Book Appointment Now
+                            </a>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: var(--spacing-3xl); text-align: center;">
+                        <a href="features-hub.html" class="btn btn-secondary">← Back to Features</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const symptomDatabase = {
+            // Urgency scoring
+            high_urgency: ['chest_pain', 'shortness_of_breath', 'severe_headache', 'vomiting'],
+            medium_urgency: ['fever', 'cough', 'stomach_pain', 'diarrhea'],
+
+            // Doctor recommendations based on symptoms
+            recommendations: {
+                respiratory: { doctor: 'Pulmonologist', service: 'General Checkup' },
+                digestive: { doctor: 'Gastroenterologist', service: 'General Checkup' },
+                general: { doctor: 'General Physician', service: 'General Checkup' },
+                musculoskeletal: { doctor: 'Orthopedic', service: 'General Checkup' }
+            }
+        };
+
+        document.getElementById('analyze-btn').addEventListener('click', function () {
+            const checkboxes = document.querySelectorAll('.symptom-checkbox input:checked');
+
+            if (checkboxes.length === 0) {
+                alert('Please select at least one symptom');
+                return;
+            }
+
+            const symptoms = Array.from(checkboxes).map(cb => ({
+                value: cb.value,
+                category: cb.dataset.category
+            }));
+
+            const analysis = analyzeSymptoms(symptoms);
+            displayResults(analysis);
+        });
+
+        function analyzeSymptoms(symptoms) {
+            const categories = {};
+            let urgencyLevel = 'low';
+
+            symptoms.forEach(s => {
+                categories[s.category] = (categories[s.category] || 0) + 1;
+
+                if (symptomDatabase.high_urgency.includes(s.value)) {
+                    urgencyLevel = 'high';
+                } else if (urgencyLevel !== 'high' && symptomDatabase.medium_urgency.includes(s.value)) {
+                    urgencyLevel = 'medium';
+                }
+            });
+
+            const primaryCategory = Object.keys(categories).reduce((a, b) =>
+                categories[a] > categories[b] ? a : b
+            );
+
+            const recommendation = symptomDatabase.recommendations[primaryCategory] ||
+                symptomDatabase.recommendations.general;
+
+            return {
+                urgency: urgencyLevel,
+                category: primaryCategory,
+                recommendation: recommendation,
+                symptomCount: symptoms.length
+            };
+        }
+
+        function displayResults(analysis) {
+            const urgencyText = {
+                low: 'Low - Routine checkup recommended',
+                medium: 'Medium - Schedule appointment soon',
+                high: 'High - Seek immediate medical attention'
+            };
+
+            const urgencyClass = `urgency-${analysis.urgency}`;
+
+            const content = `
+                <div class="urgency-indicator ${urgencyClass}">
+                    ${urgencyText[analysis.urgency]}
+                </div>
+                <h4 style="font-size: 1.5rem; margin-top: var(--spacing-lg);">Recommendations:</h4>
+                <div class="recommendation-list">
+                    <ul style="list-style: none; padding: 0;">
+                        <li>✓ Consult with: <strong>${analysis.recommendation.doctor}</strong></li>
+                        <li>✓ Suggested service: <strong>${analysis.recommendation.service}</strong></li>
+                        <li>✓ Number of symptoms: <strong>${analysis.symptomCount}</strong></li>
+                    </ul>
+                </div>
+                <p style="margin-top: var(--spacing-lg); opacity: 0.9;">
+                    <em>⚠️ This is a preliminary assessment. Please consult a healthcare professional for accurate diagnosis.</em>
+                </p>
+            `;
+
+            document.getElementById('result-content').innerHTML = content;
+            document.getElementById('result').classList.add('active');
+            document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+
+</html>

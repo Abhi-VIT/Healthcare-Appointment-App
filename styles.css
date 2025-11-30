@@ -3,10 +3,11 @@
    ======================================== */
 :root {
     /* Colors */
-    --primary-color: #007bff;
-    --primary-dark: #0056b3;
-    --primary-light: #e7f1ff;
-    --success-color: #28a745;
+    --primary-color: #007F56;
+    /* Tropical Rain Forest */
+    --primary-dark: #023A34;
+    --primary-light: #E6F2ED;
+    --success-color: #007F56;
     --warning-color: #ffc107;
     --danger-color: #dc3545;
     --neutral-gray: #6c757d;
@@ -17,6 +18,7 @@
 
     /* Typography */
     --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    --font-heading: 'Kalam', cursive;
     --font-size-base: 16px;
     --font-size-sm: 14px;
     --font-size-lg: 18px;
@@ -33,8 +35,9 @@
     --spacing-xxl: 48px;
 
     /* Border & Shadow */
-    --border-radius: 8px;
-    --border-radius-lg: 12px;
+    --border-radius: 999px;
+    /* Pill shape */
+    --border-radius-lg: 24px;
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
     --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
     --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
@@ -64,6 +67,17 @@ body {
     line-height: 1.6;
     color: var(--dark-gray);
     background-color: var(--white);
+}
+
+h1,
+h2,
+h3,
+h4,
+.logo,
+.hero-title,
+.step-title,
+.section-title {
+    font-family: var(--font-heading);
 }
 
 /* Skip to main content link (Accessibility) */
@@ -242,7 +256,7 @@ body {
    HERO SECTION
    ======================================== */
 .hero {
-    background: linear-gradient(135deg, var(--primary-light) 0%, rgba(0, 123, 255, 0.05) 100%);
+    background: linear-gradient(135deg, var(--primary-light) 0%, rgba(0, 127, 86, 0.1) 100%);
     padding: var(--spacing-xxl) var(--spacing-md);
     text-align: center;
 }
@@ -283,9 +297,12 @@ body {
     transition: var(--transition-fast);
     text-decoration: none;
     white-space: nowrap;
-    min-height: 44px; /* Accessibility: minimum touch target */
+    min-height: 44px;
+    /* Accessibility: minimum touch target */
     position: relative;
     overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .btn:focus-visible {
@@ -405,7 +422,7 @@ body {
     box-shadow: var(--shadow-md);
 }
 
-.progress-step.active ~ .progress-step .step-number {
+.progress-step.active~.progress-step .step-number {
     background-color: var(--white);
     border-color: var(--border-gray);
     color: var(--neutral-gray);
@@ -450,6 +467,7 @@ body {
         opacity: 0;
         transform: translateY(10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -461,6 +479,75 @@ body {
     font-weight: 700;
     margin-bottom: var(--spacing-xl);
     color: var(--dark-gray);
+}
+
+/* ========================================
+   CONSULTATION TOGGLE
+   ======================================== */
+.consultation-type-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+}
+
+.toggle-label {
+    font-weight: 600;
+    color: var(--dark-gray);
+}
+
+.toggle-switch {
+    position: relative;
+    display: flex;
+    background-color: var(--white);
+    border: 2px solid var(--border-gray);
+    border-radius: 999px;
+    padding: 4px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.toggle-switch input {
+    display: none;
+}
+
+.toggle-option {
+    padding: 8px 16px;
+    z-index: 2;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--neutral-gray);
+    transition: color var(--transition-normal);
+}
+
+.toggle-slider {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    bottom: 4px;
+    width: calc(50% - 4px);
+    background-color: var(--primary-color);
+    border-radius: 999px;
+    transition: transform var(--transition-normal);
+    z-index: 1;
+}
+
+/* Toggle Logic */
+#type-clinic:checked~.toggle-slider {
+    transform: translateX(0);
+}
+
+#type-video:checked~.toggle-slider {
+    transform: translateX(100%);
+}
+
+#type-clinic:checked+.toggle-option {
+    color: var(--white);
+}
+
+#type-video:checked+.toggle-option {
+    color: var(--white);
 }
 
 /* ========================================
@@ -500,7 +587,7 @@ body {
     justify-content: center;
 }
 
-.service-card input:checked + .service-content {
+.service-card input:checked+.service-content {
     border-color: var(--primary-color);
     background-color: var(--primary-light);
     box-shadow: var(--shadow-md);
@@ -568,7 +655,7 @@ body {
 .form-input:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    box-shadow: 0 0 0 3px rgba(0, 127, 86, 0.1);
 }
 
 .date-suggestion {
@@ -690,7 +777,7 @@ body {
     text-align: center;
 }
 
-.doctor-card input:checked + .doctor-content {
+.doctor-card input:checked+.doctor-content {
     border-color: var(--primary-color);
     background-color: var(--primary-light);
     box-shadow: var(--shadow-lg);
@@ -707,7 +794,7 @@ body {
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--primary-color), #0056b3);
+    background: linear-gradient(135deg, var(--primary-color), #023A34);
     color: var(--white);
     display: flex;
     align-items: center;
@@ -812,6 +899,57 @@ body {
     margin-bottom: var(--spacing-lg);
 }
 
+/* File Upload Styles */
+.file-upload-wrapper {
+    position: relative;
+    margin-top: var(--spacing-sm);
+}
+
+.file-input {
+    position: absolute;
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    z-index: -1;
+}
+
+.file-label {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background-color: var(--white);
+    border: 2px dashed var(--border-gray);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition-fast);
+    color: var(--neutral-gray);
+    font-weight: 500;
+}
+
+.file-label:hover {
+    border-color: var(--primary-color);
+    background-color: var(--primary-light);
+    color: var(--primary-color);
+}
+
+.file-input:focus+.file-label {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0, 127, 86, 0.1);
+}
+
+.upload-icon {
+    fill: currentColor;
+}
+
+.file-name {
+    display: block;
+    margin-top: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    color: var(--neutral-gray);
+}
+
 .form-group.checkbox {
     display: flex;
     gap: var(--spacing-md);
@@ -877,6 +1015,7 @@ body {
         opacity: 0;
         transform: scale(0.5);
     }
+
     to {
         opacity: 1;
         transform: scale(1);
@@ -1131,6 +1270,7 @@ body {
    PRINT STYLES
    ======================================== */
 @media print {
+
     .header,
     .step-navigation,
     .nav-link {

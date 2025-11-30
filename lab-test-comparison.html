@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab Test Comparison - MedCare</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .lab-section {
+            padding: var(--spacing-3xl) 0;
+        }
+
+        .comparison-table {
+            width: 100%;
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            margin-top: var(--spacing-xl);
+        }
+
+        .comparison-table th {
+            background: var(--primary-color);
+            color: white;
+            padding: var(--spacing-md);
+            text-align: left;
+        }
+
+        .comparison-table td {
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--border-gray);
+        }
+
+        .best-price {
+            background: #E6F2ED;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo"><svg class="logo-icon" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                    </svg>
+                    <h1>MedCare</h1>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="lab-section">
+            <div class="container" style="max-width: 1000px;">
+                <h2
+                    style="font-family: 'Kalam', cursive; font-size: 2.5rem; color: var(--primary-color); text-align: center; margin-bottom: var(--spacing-md);">
+                    🔬 Lab Test Price Comparison</h2>
+                <p style="text-align: center; margin-bottom: var(--spacing-3xl);">Compare prices and save money on lab
+                    tests</p>
+
+                <div style="background: white; border-radius: var(--border-radius-lg); padding: var(--spacing-xl);">
+                    <label class="form-label">Select Test</label>
+                    <select id="test-select" class="form-input">
+                        <option value="">Choose a test...</option>
+                        <option value="cbc">Complete Blood Count (CBC)</option>
+                        <option value="lipid">Lipid Profile</option>
+                        <option value="thyroid">Thyroid Function Test</option>
+                        <option value="diabetes">Diabetes Test (HbA1c)</option>
+                        <option value="liver">Liver Function Test</option>
+                    </select>
+                </div>
+
+                <div id="comparison-results"></div>
+
+                <div style="text-align: center; margin-top: var(--spacing-3xl);"><a href="features-hub.html"
+                        class="btn btn-secondary">← Back to Features</a></div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const labData = {
+            cbc: [
+                { lab: 'Thyrocare', price: 300, rating: 4.5, homeCollection: true },
+                { lab: 'Dr Lal PathLabs', price: 450, rating: 4.8, homeCollection: true },
+                { lab: 'SRL Diagnostics', price: 400, rating: 4.6, homeCollection: true },
+                { lab: 'Metropolis', price: 350, rating: 4.7, homeCollection: false }
+            ],
+            lipid: [
+                { lab: 'Thyrocare', price: 500, rating: 4.5, homeCollection: true },
+                { lab: 'Dr Lal PathLabs', price: 700, rating: 4.8, homeCollection: true },
+                { lab: 'SRL Diagnostics', price: 650, rating: 4.6, homeCollection: true }
+            ],
+            thyroid: [
+                { lab: 'Thyrocare', price: 400, rating: 4.5, homeCollection: true },
+                { lab: 'Dr Lal PathLabs', price: 600, rating: 4.8, homeCollection: true },
+                { lab: 'Metropolis', price: 550, rating: 4.7, homeCollection: true }
+            ]
+        };
+
+        document.getElementById('test-select').addEventListener('change', (e) => {
+            const test = e.target.value;
+            const resultsDiv = document.getElementById('comparison-results');
+
+            if (!test) { resultsDiv.innerHTML = ''; return; }
+
+            const data = labData[test] || labData.cbc;
+            const minPrice = Math.min(...data.map(d => d.price));
+
+            resultsDiv.innerHTML = `
+                <table class="comparison-table">
+                    <thead><tr><th>Lab Name</th><th>Price</th><th>Rating</th><th>Home Collection</th></tr></thead>
+                    <tbody>${data.map(lab => `
+                        <tr class="${lab.price === minPrice ? 'best-price' : ''}">
+                            <td>${lab.name}</td>
+                            <td>₹${lab.price} ${lab.price === minPrice ? '🏆' : ''}</td>
+                            <td>${'⭐'.repeat(Math.floor(lab.rating))} (${lab.rating})</td>
+                            <td>${lab.homeCollection ? '✓ Yes' : '✗ No'}</td>
+                        </tr>
+                    `).join('')}</tbody>
+                </table>
+            `;
+        });
+    </script>
+</body>
+
+</html>

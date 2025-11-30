@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Prescription Scanner - Extract medicine names from prescriptions">
+    <title>Prescription Scanner - MedCare</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+    <style>
+        /* Additional styles for prescription scanner */
+        .scanner-section {
+            padding: var(--spacing-3xl) 0;
+            background: linear-gradient(135deg, var(--primary-light) 0%, #fff 100%);
+        }
+
+        .scanner-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: var(--spacing-xl);
+        }
+
+        .scanner-header {
+            text-align: center;
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .scanner-title {
+            font-family: 'Kalam', cursive;
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .scanner-subtitle {
+            color: var(--neutral-gray);
+            font-size: 1.1rem;
+        }
+
+        .upload-area {
+            background: var(--white);
+            border: 3px dashed var(--border-gray);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-2xl);
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary-color);
+            background: var(--primary-light);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--primary-color);
+            background: var(--primary-light);
+        }
+
+        .upload-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto var(--spacing-md);
+            fill: var(--primary-color);
+        }
+
+        .upload-text {
+            font-size: 1.2rem;
+            color: var(--dark-gray);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .upload-hint {
+            color: var(--neutral-gray);
+            font-size: 0.9rem;
+        }
+
+        .preview-container {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
+            display: none;
+        }
+
+        .preview-container.active {
+            display: block;
+        }
+
+        .preview-image {
+            max-width: 100%;
+            border-radius: var(--border-radius);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .scan-progress {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            text-align: center;
+            display: none;
+        }
+
+        .scan-progress.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid var(--border-gray);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto var(--spacing-md);
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .progress-text {
+            color: var(--dark-gray);
+            font-size: 1.1rem;
+        }
+
+        .results-container {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            display: none;
+        }
+
+        .results-container.active {
+            display: block;
+        }
+
+        .results-header {
+            font-family: 'Kalam', cursive;
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-lg);
+            text-align: center;
+        }
+
+        .medicine-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .medicine-card {
+            background: var(--primary-light);
+            border: 2px solid var(--primary-color);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-md);
+            text-align: center;
+            transition: var(--transition-fast);
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .medicine-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 127, 86, 0.2);
+            background: var(--primary-color);
+            color: var(--white);
+        }
+
+        .medicine-icon {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto var(--spacing-sm);
+            fill: var(--primary-color);
+        }
+
+        .medicine-card:hover .medicine-icon {
+            fill: var(--white);
+        }
+
+        .medicine-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .medicine-link-text {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .no-results {
+            text-align: center;
+            color: var(--neutral-gray);
+            padding: var(--spacing-xl);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: var(--spacing-md);
+            justify-content: center;
+            margin-top: var(--spacing-lg);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header" role="banner">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                    </svg>
+                    <h1>MedCare</h1>
+                </div>
+                <nav class="main-nav" role="navigation">
+                    <ul class="nav-menu">
+                        <li><a href="index.html" class="nav-link">Home</a></li>
+                        <li><a href="prescription-scanner.html" class="nav-link">Prescription Scanner</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content" role="main">
+        <!-- Scanner Section -->
+        <section class="scanner-section">
+            <div class="scanner-container">
+                <div class="scanner-header">
+                    <h2 class="scanner-title">📋 Prescription Scanner</h2>
+                    <p class="scanner-subtitle">Upload a prescription image to extract medicine names and purchase them
+                        easily</p>
+                </div>
+
+                <!-- Upload Area -->
+                <div class="upload-area" id="upload-area">
+                    <svg class="upload-icon" viewBox="0 0 24 24">
+                        <path
+                            d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z" />
+                    </svg>
+                    <p class="upload-text">Click to upload or drag and drop</p>
+                    <p class="upload-hint">PNG, JPG, PDF up to 10MB</p>
+                    <input type="file" id="prescription-upload" accept="image/*,.pdf" style="display: none;">
+                </div>
+
+                <!-- Preview -->
+                <div class="preview-container" id="preview-container">
+                    <h3>Preview:</h3>
+                    <img id="preview-image" class="preview-image" alt="Prescription preview">
+                    <button class="btn btn-primary btn-lg" id="scan-btn">
+                        Scan Prescription
+                        <span class="btn-arrow">🔍</span>
+                    </button>
+                </div>
+
+                <!-- Scan Progress -->
+                <div class="scan-progress" id="scan-progress">
+                    <div class="spinner"></div>
+                    <p class="progress-text" id="progress-text">Analyzing prescription...</p>
+                </div>
+
+                <!-- Results -->
+                <div class="results-container" id="results-container">
+                    <h3 class="results-header">💊 Detected Medicines</h3>
+                    <div class="medicine-grid" id="medicine-grid"></div>
+                    <div class="btn-group">
+                        <button class="btn btn-secondary" id="scan-another">Scan Another</button>
+                        <a href="index.html" class="btn btn-primary">Book Appointment</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>MedCare</h4>
+                    <p>Making healthcare accessible to everyone</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="prescription-scanner.html">Prescription Scanner</a></li>
+                        <li><a href="#privacy">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p>Email: support@medcare.com</p>
+                    <p>Phone: 1-800-MED-CARE</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 MedCare Healthcare. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="prescription-scanner.js"></script>
+</body>
+
+</html>

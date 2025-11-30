@@ -11,6 +11,8 @@ const bookingState = {
     date: null,
     time: null,
     doctor: null,
+    consultationType: 'clinic',
+    prescription: null,
     currentStep: 1,
     prices: {
         'general-checkup': 50,
@@ -85,6 +87,17 @@ function initializeEventListeners() {
 
     // Form validation
     document.getElementById('patient-form').addEventListener('change', validateForm);
+
+    // Consultation Type Toggle
+    document.querySelectorAll('input[name="consultation-type"]').forEach(input => {
+        input.addEventListener('change', handleConsultationTypeChange);
+    });
+
+    // File Upload
+    const fileInput = document.getElementById('prescription');
+    if (fileInput) {
+        fileInput.addEventListener('change', handleFileUpload);
+    }
 }
 
 function initializeNavigation() {
@@ -122,7 +135,7 @@ function handleDateButton(e) {
     const days = parseInt(e.target.getAttribute('data-days'));
     const date = new Date();
     date.setDate(date.getDate() + days);
-    
+
     const dateString = date.toISOString().split('T')[0];
     document.getElementById('appointment-date').value = dateString;
     bookingState.date = dateString;
@@ -162,6 +175,25 @@ function handleDoctorChange(e) {
     const doctorName = e.target.parentElement.querySelector('.doctor-name').textContent;
     updateNextButtonState();
     announceSelection('Doctor selected: ' + doctorName);
+}
+
+function handleConsultationTypeChange(e) {
+    bookingState.consultationType = e.target.value;
+    announceSelection('Consultation type set to: ' + (e.target.value === 'clinic' ? 'In-Clinic' : 'Video Call'));
+}
+
+function handleFileUpload(e) {
+    const file = e.target.files[0];
+    const fileNameDisplay = document.getElementById('file-name');
+
+    if (file) {
+        bookingState.prescription = file.name;
+        fileNameDisplay.textContent = file.name;
+        announceSelection('File selected: ' + file.name);
+    } else {
+        bookingState.prescription = null;
+        fileNameDisplay.textContent = 'No file chosen';
+    }
 }
 
 // ========================================
@@ -220,7 +252,7 @@ function showStep(stepNumber) {
 function updateProgressIndicator() {
     const steps = document.querySelectorAll('.progress-step');
     const progressBar = document.querySelector('.progress-indicator');
-    
+
     steps.forEach((step, index) => {
         if (index < bookingState.currentStep) {
             step.classList.add('active');
@@ -420,6 +452,10 @@ function updateBookingSummary() {
     const serviceLabel = document.querySelector(`input[name="service"][value="${bookingState.service}"]`)?.parentElement?.querySelector('.service-name')?.textContent || '-';
     document.getElementById('summary-service').textContent = serviceLabel;
 
+    // Type
+    const typeLabel = bookingState.consultationType === 'clinic' ? 'In-Clinic' : 'Video Call';
+    document.getElementById('summary-type').textContent = typeLabel;
+
     // Date
     const dateFormatted = bookingState.date ? formatDate(new Date(bookingState.date)) : '-';
     document.getElementById('summary-date').textContent = dateFormatted;
@@ -460,6 +496,8 @@ function submitBooking() {
         email,
         phone,
         notes,
+        consultationType: bookingState.consultationType,
+        prescription: bookingState.prescription,
         price: bookingState.prices[bookingState.service]
     };
 
@@ -494,7 +532,8 @@ function showSuccessMessage(booking) {
 
     // Update confirmation details
     const serviceLabel = document.querySelector(`input[name="service"][value="${booking.service}"]`)?.parentElement?.querySelector('.service-name')?.textContent;
-    const confirmation = `Your appointment is confirmed for ${formatDate(new Date(booking.date))} at ${formatTime(booking.time)} with ${bookingState.doctors[booking.doctor]}. A confirmation email has been sent to ${booking.email}`;
+    const typeLabel = booking.consultationType === 'clinic' ? 'In-Clinic' : 'Video Call';
+    const confirmation = `Your ${typeLabel} appointment is confirmed for ${formatDate(new Date(booking.date))} at ${formatTime(booking.time)} with ${bookingState.doctors[booking.doctor]}. A confirmation email has been sent to ${booking.email}`;
     document.getElementById('confirmation-summary').textContent = confirmation;
 
     // Scroll to success
@@ -507,6 +546,8 @@ function resetBooking() {
     bookingState.date = null;
     bookingState.time = null;
     bookingState.doctor = null;
+    bookingState.consultationType = 'clinic';
+    bookingState.prescription = null;
     bookingState.currentStep = 1;
 
     // Reset form

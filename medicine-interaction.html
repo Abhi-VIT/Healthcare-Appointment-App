@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicine Interaction Checker - MedCare</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .interaction-section {
+            padding: var(--spacing-3xl) 0;
+        }
+
+        .medicine-input-area {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .selected-medicines {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+        }
+
+        .medicine-tag {
+            background: var(--primary-color);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .remove-med {
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .result-safe {
+            background: #4ecdc4;
+        }
+
+        .result-caution {
+            background: #ff9f43;
+        }
+
+        .result-danger {
+            background: #ff6b6b;
+        }
+
+        .result-box {
+            color: white;
+            padding: var(--spacing-xl);
+            border-radius: var(--border-radius-lg);
+            margin-top: var(--spacing-xl);
+            display: none;
+        }
+
+        .result-box.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo"><svg class="logo-icon" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                    </svg>
+                    <h1>MedCare</h1>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="interaction-section">
+            <div class="container" style="max-width: 800px;">
+                <h2
+                    style="font-family: 'Kalam', cursive; font-size: 2.5rem; color: var(--primary-color); text-align: center; margin-bottom: var(--spacing-md);">
+                    ⚠️ Drug Interaction Checker</h2>
+                <p style="text-align: center; margin-bottom: var(--spacing-3xl);">Check if your medicines are safe to
+                    take together</p>
+
+                <div class="medicine-input-area">
+                    <label class="form-label">Enter Medicine Name</label>
+                    <input type="text" id="medicine-input" class="form-input" placeholder="e.g., Aspirin, Paracetamol">
+                    <button class="btn btn-primary" id="add-medicine-btn" style="margin-top: var(--spacing-md);">Add
+                        Medicine</button>
+
+                    <div class="selected-medicines" id="selected-medicines"></div>
+
+                    <button class="btn btn-primary btn-lg" id="check-interaction-btn"
+                        style="width: 100%; margin-top: var(--spacing-xl);">Check Interactions</button>
+                </div>
+
+                <div class="result-box" id="result-box"></div>
+
+                <div style="text-align: center; margin-top: var(--spacing-3xl);"><a href="features-hub.html"
+                        class="btn btn-secondary">← Back to Features</a></div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const medicines = [];
+        const interactions = {
+            'aspirin-warfarin': { level: 'danger', msg: 'Increases bleeding risk' },
+            'paracetamol-alcohol': { level: 'caution', msg: 'May cause liver damage' },
+            'ibuprofen-aspirin': { level: 'caution', msg: 'May reduce effectiveness' }
+        };
+
+        document.getElementById('add-medicine-btn').addEventListener('click', () => {
+            const input = document.getElementById('medicine-input');
+            const med = input.value.trim().toLowerCase();
+            if (med && !medicines.includes(med)) {
+                medicines.push(med);
+                updateDisplay();
+                input.value = '';
+            }
+        });
+
+        function updateDisplay() {
+            document.getElementById('selected-medicines').innerHTML = medicines.map((m, i) =>
+                `<div class="medicine-tag">${m}<span class="remove-med" onclick="removeMedicine(${i})">×</span></div>`
+            ).join('');
+        }
+
+        function removeMedicine(index) {
+            medicines.splice(index, 1);
+            updateDisplay();
+        }
+
+        document.getElementById('check-interaction-btn').addEventListener('click', () => {
+            if (medicines.length < 2) {
+                alert('Add at least 2 medicines to check interactions');
+                return;
+            }
+
+            let found = false;
+            let level = 'safe';
+            let message = 'No known interactions found. These medicines appear safe to take together.';
+
+            for (let i = 0; i < medicines.length; i++) {
+                for (let j = i + 1; j < medicines.length; j++) {
+                    const key = [medicines[i], medicines[j]].sort().join('-');
+                    if (interactions[key]) {
+                        found = true;
+                        level = interactions[key].level;
+                        message = `⚠️ Interaction found between ${medicines[i]} and ${medicines[j]}: ${interactions[key].msg}`;
+                        break;
+                    }
+                }
+                if (found) break;
+            }
+
+            const resultBox = document.getElementById('result-box');
+            resultBox.className = `result-box result-${level} active`;
+            resultBox.innerHTML = `<h3 style="font-size: 1.5rem; margin-bottom: 1rem;">${level === 'safe' ? '✓ Safe' : level === 'caution' ? '⚠️ Caution' : '🚫 Danger'}</h3><p>${message}</p>${level !== 'safe' ? '<p style="margin-top: 1rem;"><em>Consult your doctor before taking these medicines together.</em></p>' : ''}`;
+        });
+    </script>
+</body>
+
+</html>

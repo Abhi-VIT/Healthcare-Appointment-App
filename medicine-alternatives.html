@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generic Medicine Finder - MedCare</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .alternatives-section {
+            padding: var(--spacing-3xl) 0;
+            background: linear-gradient(135deg, var(--primary-light) 0%, #fff 100%);
+        }
+
+        .search-box {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .alternatives-grid {
+            display: grid;
+            gap: var(--spacing-md);
+        }
+
+        .alternative-card {
+            background: var(--white);
+            border: 2px solid var(--primary-color);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .savings-badge {
+            background: #4ecdc4;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo"><svg class="logo-icon" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                    </svg>
+                    <h1>MedCare</h1>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="alternatives-section">
+            <div class="container" style="max-width: 800px;">
+                <h2
+                    style="font-family: 'Kalam', cursive; font-size: 2.5rem; color: var(--primary-color); text-align: center; margin-bottom: var(--spacing-md);">
+                    💊 Generic Medicine Finder</h2>
+                <p style="text-align: center; margin-bottom: var(--spacing-3xl);">Find affordable alternatives to
+                    branded medicines</p>
+
+                <div class="search-box">
+                    <label class="form-label">Enter Brand Medicine Name</label>
+                    <input type="text" id="medicine-search" class="form-input" placeholder="e.g., Crocin, Calpol">
+                    <button class="btn btn-primary" id="search-btn" style="margin-top: var(--spacing-md);">Find
+                        Alternatives</button>
+                </div>
+
+                <div id="results-area"></div>
+
+                <div style="text-align: center; margin-top: var(--spacing-3xl);"><a href="features-hub.html"
+                        class="btn btn-secondary">← Back to Features</a></div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const medicineDB = {
+            'crocin': {
+                branded: 500, alternatives: [
+                    { name: 'Paracetamol (Generic)', price: 50 },
+                    { name: 'Dolo 650', price: 150 },
+                    { name: 'Calpol', price: 200 }
+                ]
+            },
+            'disprin': {
+                branded: 200, alternatives: [
+                    { name: 'Aspirin (Generic)', price: 30 },
+                    { name: 'Ecosprin', price: 80 }
+                ]
+            },
+            'combiflam': {
+                branded: 400, alternatives: [
+                    { name: 'Ibuprofen + Paracetamol (Generic)', price: 80 },
+                    { name: 'Brufen Plus', price: 150 }
+                ]
+            }
+        };
+
+        document.getElementById('search-btn').addEventListener('click', () => {
+            const search = document.getElementById('medicine-search').value.trim().toLowerCase();
+            const resultsArea = document.getElementById('results-area');
+
+            if (!search) { alert('Enter medicine name'); return; }
+
+            const data = medicineDB[search];
+            if (!data) {
+                resultsArea.innerHTML = '<div class="search-box"><p style="text-align: center;">Medicine not found in database. Try another name.</p></div>';
+                return;
+            }
+
+            resultsArea.innerHTML = `
+                <div class="search-box">
+                    <h3 style="margin-bottom: var(--spacing-md);">Original Medicine</h3>
+                    <div class="alternative-card"><div><strong>${search.toUpperCase()}</strong><br><small>Branded</small></div><div><strong>₹${data.branded}</strong></div></div>
+                    <h3 style="margin-top: var(--spacing-xl); margin-bottom: var(--spacing-md);">💰 Affordable Alternatives</h3>
+                    <div class="alternatives-grid">${data.alternatives.map(alt => {
+                const savings = Math.round((1 - alt.price / data.branded) * 100);
+                return `<div class="alternative-card"><div><strong>${alt.name}</strong><br><small>Generic Alternative</small></div><div style="text-align: right;"><strong>₹${alt.price}</strong><br><span class="savings-badge">Save ${savings}%</span></div></div>`;
+            }).join('')}</div>
+                </div>
+            `;
+        });
+    </script>
+</body>
+
+</html>

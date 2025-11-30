@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency SOS - MedCare</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .sos-section {
+            padding: var(--spacing-3xl) 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff8787 100%);
+        }
+
+        .sos-container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .sos-title {
+            font-family: 'Kalam', cursive;
+            font-size: 2.5rem;
+            color: var(--white);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .sos-subtitle {
+            color: var(--white);
+            font-size: 1.1rem;
+            margin-bottom: var(--spacing-3xl);
+        }
+
+        .sos-button-main {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: var(--white);
+            border: 8px solid rgba(255, 255, 255, 0.3);
+            font-size: 4rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 auto var(--spacing-3xl);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .sos-button-main:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        .sos-button-main:active {
+            transform: scale(0.95);
+        }
+
+        .sos-button-main.activated {
+            animation: pulse 1.5s infinite;
+            background: #ff6b6b;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7);
+            }
+
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 20px rgba(255, 107, 107, 0);
+            }
+        }
+
+        .quick-dial-section {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .quick-dial-title {
+            font-family: 'Kalam', cursive;
+            font-size: 1.5rem;
+            color: var(--dark-gray);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .quick-dial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .quick-dial-btn {
+            background: var(--primary-light);
+            border: 2px solid var(--primary-color);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            text-decoration: none;
+            color: var(--dark-gray);
+        }
+
+        .quick-dial-btn:hover {
+            background: var(--primary-color);
+            color: var(--white);
+            transform: translateY(-2px);
+        }
+
+        .quick-dial-icon {
+            font-size: 2rem;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .quick-dial-label {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .quick-dial-number {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 4px;
+        }
+
+        .location-info {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+            text-align: left;
+        }
+
+        .location-status {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #4ecdc4;
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        .alert-message {
+            background: var(--white);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            margin-top: var(--spacing-xl);
+            display: none;
+        }
+
+        .alert-message.active {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                    </svg>
+                    <h1>MedCare</h1>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="sos-section">
+            <div class="container">
+                <div class="sos-container">
+                    <h2 class="sos-title">🚨 Emergency SOS</h2>
+                    <p class="sos-subtitle">Press the button in case of medical emergency</p>
+
+                    <button class="sos-button-main" id="sos-btn">
+                        🚨
+                    </button>
+
+                    <div class="location-info">
+                        <div class="location-status">
+                            <div class="status-dot"></div>
+                            <strong>Location Tracking: Active</strong>
+                        </div>
+                        <p id="location-text">Getting your location...</p>
+                    </div>
+
+                    <div class="quick-dial-section">
+                        <h3 class="quick-dial-title">Quick Dial Emergency Services</h3>
+                        <div class="quick-dial-grid">
+                            <a href="tel:102" class="quick-dial-btn">
+                                <div class="quick-dial-icon">🚑</div>
+                                <div class="quick-dial-label">Ambulance</div>
+                                <div class="quick-dial-number">102</div>
+                            </a>
+                            <a href="tel:100" class="quick-dial-btn">
+                                <div class="quick-dial-icon">👮</div>
+                                <div class="quick-dial-label">Police</div>
+                                <div class="quick-dial-number">100</div>
+                            </a>
+                            <a href="tel:101" class="quick-dial-btn">
+                                <div class="quick-dial-icon">🚒</div>
+                                <div class="quick-dial-label">Fire</div>
+                                <div class="quick-dial-number">101</div>
+                            </a>
+                            <a href="tel:108" class="quick-dial-btn">
+                                <div class="quick-dial-icon">🏥</div>
+                                <div class="quick-dial-label">Emergency</div>
+                                <div class="quick-dial-number">108</div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="alert-message" id="alert-msg">
+                        <h3 style="color: #ff6b6b; margin-bottom: 1rem;">🚨 SOS Alert Activated!</h3>
+                        <p>Emergency alert has been sent with your location.</p>
+                        <p><strong>Location:</strong> <span id="alert-location"></span></p>
+                        <p style="margin-top: 1rem; opacity: 0.8;">Help is on the way. Stay calm.</p>
+                    </div>
+
+                    <div style="margin-top: var(--spacing-3xl);">
+                        <a href="features-hub.html" class="btn btn-secondary">← Back to Features</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        let currentLocation = null;
+
+        // Get user location
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                document.getElementById('location-text').textContent = 'Geolocation not supported';
+            }
+        }
+
+        function showPosition(position) {
+            const lat = position.coords.latitude.toFixed(4);
+            const lon = position.coords.longitude.toFixed(4);
+            currentLocation = { lat, lon };
+            document.getElementById('location-text').textContent =
+                `Latitude: ${lat}, Longitude: ${lon}`;
+        }
+
+        function showError(error) {
+            document.getElementById('location-text').textContent =
+                'Unable to get location. Please enable location services.';
+        }
+
+        // SOS Button
+        document.getElementById('sos-btn').addEventListener('click', function () {
+            const btn = this;
+            const alertMsg = document.getElementById('alert-msg');
+
+            btn.classList.add('activated');
+            alertMsg.classList.add('active');
+
+            if (currentLocation) {
+                document.getElementById('alert-location').textContent =
+                    `Lat: ${currentLocation.lat}, Lon: ${currentLocation.lon}`;
+            } else {
+                document.getElementById('alert-location').textContent = 'Location unavailable';
+            }
+
+            // Simulate sending alert
+            console.log('SOS Alert sent!', currentLocation);
+
+            // Play alert sound (if available)
+            try {
+                const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTgjMGHm7A7+OZSA0QT6TVn');
+                audio.play().catch(e => console.log('Audio play failed'));
+            } catch (e) { }
+
+            // Vibrate (if supported)
+            if (navigator.vibrate) {
+                navigator.vibrate([200, 100, 200, 100, 200]);
+            }
+        });
+
+        // Initialize location on load
+        getLocation();
+    </script>
+</body>
+
+</html>
